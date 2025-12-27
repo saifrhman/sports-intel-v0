@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: team_match_bridge
+    description: >
+      One row per team per match. Contains team-level outcomes
+      used as input to rating and simulation models.
+
+    columns:
+      - name: match_id
+        tests:
+          - not_null
+
+      - name: team_id
+        tests:
+          - not_null
+
+      - name: opponent_id
+        tests:
+          - not_null
+
+      - name: goals_for
+        tests:
+          - not_null
+
+      - name: goals_against
+        tests:
+          - not_null
+
+      - name: outcome
+        tests:
+          - accepted_values:
+              values: [-1, 0, 1]

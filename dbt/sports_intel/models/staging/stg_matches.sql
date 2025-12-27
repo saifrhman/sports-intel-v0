@@ -32,8 +32,11 @@ SELECT
 
     match->'homeTeam'->>'id'    AS home_team_id,
     match->'awayTeam'->>'id'    AS away_team_id,
+    match->'competition'->>'id' AS competition_id,
 
-    match->'competition'->>'id' AS competition_id
+    (match->'score'->'fullTime'->>'home')::int AS home_goals,
+    (match->'score'->'fullTime'->>'away')::int AS away_goals
 
 FROM exploded_matches
+
 -- This is a staging model for football matches data sourced from football-data.org.
