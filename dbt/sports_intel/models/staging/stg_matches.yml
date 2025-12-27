@@ -2,17 +2,36 @@ version: 2
 
 models:
   - name: stg_matches
-    description: "Normalized match-level data from football-data.org"
+    description: >
+      Normalized match-level data extracted from raw football-data.org
+      match payloads. One row per match.
+
     columns:
       - name: match_id
+        description: Unique match identifier from the source API
         tests:
           - not_null
           - unique
 
+      - name: utc_date
+        description: UTC kickoff date and time of the match
+        tests:
+          - not_null
+
+      - name: status
+        description: Match status (e.g. SCHEDULED, FINISHED)
+
       - name: home_team_id
+        description: Home team identifier
         tests:
           - not_null
 
       - name: away_team_id
+        description: Away team identifier
+        tests:
+          - not_null
+
+      - name: competition_id
+        description: Competition identifier (league or tournament)
         tests:
           - not_null
