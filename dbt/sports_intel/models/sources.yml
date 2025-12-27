@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    database: sports_intel
+    schema: raw
+    tables:
+      - name: matches
+        description: "Raw match payloads from external football APIs"

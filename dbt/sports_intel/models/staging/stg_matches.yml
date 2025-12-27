@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_matches
+    description: "Normalized match-level data from football-data.org"
+    columns:
+      - name: match_id
+        tests:
+          - not_null
+          - unique
+
+      - name: home_team_id
+        tests:
+          - not_null
+
+      - name: away_team_id
+        tests:
+          - not_null
