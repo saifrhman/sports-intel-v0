@@ -18,25 +18,25 @@ It is designed for:
 flowchart TD
 
     %% External Data Sources
-    A[External Sports APIs\nfootball-data.org] --> B[Python Ingestion Layer\nsrc/ingestion]
+    A[External Sports APIs - football-data.org] --> B[Python Ingestion Layer - src/ingestion]
 
     %% Raw Data Storage
-    B --> C[(PostgreSQL\nraw.matches)]
+    B --> C[(PostgreSQL - raw.matches)]
 
     %% dbt Transformation Layer
-    C --> D[dbt Staging Models\nstg_matches]
-    D --> E[dbt Analytics Models\nfact_matches]
-    E --> F[Team-Match Bridge\nteam_match_bridge]
+    C --> D[dbt Staging Models - stg_matches]
+    D --> E[dbt Analytics Models - fact_matches]
+    E --> F[Team-Match Bridge - team_match_bridge]
 
     %% Bayesian Modeling Layer
-    F --> G[Bayesian Team Rating Model\nNormal mu, sigma^2]
-    G --> H[(PostgreSQL\nanalytics.team_ratings_current)]
-    G --> I[(PostgreSQL\nanalytics.match_predictions)]
+    F --> G[Bayesian Team Rating Model - Normal mu, sigma^2]
+    G --> H[(PostgreSQL - analytics.team_ratings_current)]
+    G --> I[(PostgreSQL - analytics.match_predictions)]
 
     %% Monte Carlo Simulation Layer
-    H --> J[Monte Carlo Simulation Engine\n5000+ simulations]
-    J --> K[(PostgreSQL\nanalytics.team_simulation_summary)]
-    J --> L[(PostgreSQL\nanalytics.match_simulations)]
+    H --> J[Monte Carlo Simulation Engine - 5000+ simulations]
+    J --> K[(PostgreSQL - analytics.team_simulation_summary)]
+    J --> L[(PostgreSQL - analytics.match_simulations)]
 
     %% Orchestration
     subgraph Prefect[Prefect Orchestration]
