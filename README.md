@@ -13,21 +13,67 @@ It is designed for:
 - Investment-grade decision support (probabilities, not point estimates)
 
 ## Architecture
-External APIs
-     ↓
-Python Ingestion
-     ↓
-PostgreSQL (raw)
-     ↓
-dbt (staging → analytics)
-     ↓
-Bayesian Rating Model (Python)
-     ↓
-Monte Carlo Simulations
-     ↓
-PostgreSQL (decision tables)
-     ↓
-Prefect Orchestration (scheduled, retryable)
+
+```mermaid
+flowchart TD
+    %% ========================
+    %% External Data Sources
+    %% ========================
+    A[External Sports APIs<br/>(football-data.org)] --> B[Python Ingestion Layer<br/>(src/ingestion)]
+
+    %% ========================
+    %% Raw Data Storage
+    %% ========================
+    B --> C[(PostgreSQL<br/>raw.matches)]
+
+    %% ========================
+    %% dbt Transformation Layer
+    %% ========================
+    C --> D[dbt Staging Models<br/>(stg_matches)]
+    D --> E[dbt Analytics Models<br/>(fact_matches)]
+    E --> F[Team-Match Bridge<br/>(team_match_bridge)]
+
+    %% ========================
+    %% Bayesian Modeling Layer
+    %% ========================
+    F --> G[Bayesian Team Rating Model<br/>(Normal μ, σ²)]
+    G --> H[(PostgreSQL<br/>analytics.team_ratings_current)]
+    G --> I[(PostgreSQL<br/>analytics.match_predictions)]
+
+    %% ========================
+    %% Monte Carlo Simulation Layer
+    %% ========================
+    H --> J[Monte Carlo Simulation Engine<br/>(5k+ simulations)]
+    J --> K[(PostgreSQL<br/>analytics.team_simulation_summary)]
+    J --> L[(PostgreSQL<br/>analytics.match_simulations)]
+
+    %% ========================
+    %% Orchestration
+    %% ========================
+    subgraph Prefect["Prefect Orchestration"]
+        P1[dbt run]
+        P2[Bayesian Ratings Update]
+        P3[Monte Carlo Simulations]
+        P1 --> P2 --> P3
+    end
+
+    Prefect --> D
+    Prefect --> G
+    Prefect --> J
+
+    %% ========================
+    %% Internal API Layer
+    %% ========================
+    H --> M[FastAPI Internal API]
+    K --> M
+
+    %% ========================
+    %% Consumers
+    %% ========================
+    M --> N[Analysts / Decision Makers]
+    M --> O[Internal Tools / Notebooks]
+
+```
 
 ### Key principle:
 
@@ -97,18 +143,21 @@ The entire system is orchestrated using **Prefect 2.x**:
 - Docker (local infra)
 
 ## Project Structure
-sports-intel-v0/
-├── src/                  # Python application layer
-│   ├── ingestion/
-│   ├── models/
-│   │   ├── ratings/
-│   │   └── simulation/
-│   ├── orchestration/
-│   └── utils/
-├── dbt/                  # SQL transformations only
-│   └── sports_intel/
-├── infra/
-└── README.md
+# Project tree
+
+.
+ * [src](./src)
+   * [ingestion](./src/ingestion)
+   * [models](./src/models)
+     * [ratings](./src/models/ratings)
+     * [simulation](./src/models/simulation)
+   * [orchestration](./src/orchestration)
+   * [utils](./src/utils)
+ * [dbt](./dbt)
+   * [sports_intel](./dbt/sports_intel)
+ * [infra](./infra)
+ * [README.md](./README.md)
+
 
 ## Next Extensions (Planned)
 
