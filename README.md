@@ -16,41 +16,30 @@ It is designed for:
 
 ```mermaid
 flowchart TD
-    %% ========================
+
     %% External Data Sources
-    %% ========================
-    A[External Sports APIs<br/>(football-data.org)] --> B[Python Ingestion Layer<br/>(src/ingestion)]
+    A[External Sports APIs\nfootball-data.org] --> B[Python Ingestion Layer\nsrc/ingestion]
 
-    %% ========================
     %% Raw Data Storage
-    %% ========================
-    B --> C[(PostgreSQL<br/>raw.matches)]
+    B --> C[(PostgreSQL\nraw.matches)]
 
-    %% ========================
     %% dbt Transformation Layer
-    %% ========================
-    C --> D[dbt Staging Models<br/>(stg_matches)]
-    D --> E[dbt Analytics Models<br/>(fact_matches)]
-    E --> F[Team-Match Bridge<br/>(team_match_bridge)]
+    C --> D[dbt Staging Models\nstg_matches]
+    D --> E[dbt Analytics Models\nfact_matches]
+    E --> F[Team-Match Bridge\nteam_match_bridge]
 
-    %% ========================
     %% Bayesian Modeling Layer
-    %% ========================
-    F --> G[Bayesian Team Rating Model<br/>(Normal μ, σ²)]
-    G --> H[(PostgreSQL<br/>analytics.team_ratings_current)]
-    G --> I[(PostgreSQL<br/>analytics.match_predictions)]
+    F --> G[Bayesian Team Rating Model\nNormal mu, sigma^2]
+    G --> H[(PostgreSQL\nanalytics.team_ratings_current)]
+    G --> I[(PostgreSQL\nanalytics.match_predictions)]
 
-    %% ========================
     %% Monte Carlo Simulation Layer
-    %% ========================
-    H --> J[Monte Carlo Simulation Engine<br/>(5k+ simulations)]
-    J --> K[(PostgreSQL<br/>analytics.team_simulation_summary)]
-    J --> L[(PostgreSQL<br/>analytics.match_simulations)]
+    H --> J[Monte Carlo Simulation Engine\n5000+ simulations]
+    J --> K[(PostgreSQL\nanalytics.team_simulation_summary)]
+    J --> L[(PostgreSQL\nanalytics.match_simulations)]
 
-    %% ========================
     %% Orchestration
-    %% ========================
-    subgraph Prefect["Prefect Orchestration"]
+    subgraph Prefect[Prefect Orchestration]
         P1[dbt run]
         P2[Bayesian Ratings Update]
         P3[Monte Carlo Simulations]
@@ -61,19 +50,15 @@ flowchart TD
     Prefect --> G
     Prefect --> J
 
-    %% ========================
     %% Internal API Layer
-    %% ========================
     H --> M[FastAPI Internal API]
     K --> M
 
-    %% ========================
     %% Consumers
-    %% ========================
-    M --> N[Analysts / Decision Makers]
-    M --> O[Internal Tools / Notebooks]
-
+    M --> N[Analysts and Decision Makers]
+    M --> O[Internal Tools and Notebooks]
 ```
+
 
 ### Key principle:
 
